@@ -3446,20 +3446,25 @@ func (r LinuxFunctionAppResource) vNetIntegration_basic(data acceptance.TestData
 provider "azurerm" {
   features {}
 }
+
 %s
+
 resource "azurerm_virtual_network" "test" {
   name                = "vnet-%d"
   address_space       = ["10.0.0.0/16"]
   location            = azurerm_resource_group.test.location
   resource_group_name = azurerm_resource_group.test.name
 }
+
 resource "azurerm_subnet" "test1" {
   name                 = "subnet1"
   resource_group_name  = azurerm_resource_group.test.name
   virtual_network_name = azurerm_virtual_network.test.name
   address_prefixes     = ["10.0.1.0/24"]
+
   delegation {
     name = "delegation"
+
     service_delegation {
       name    = "Microsoft.Web/serverFarms"
       actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
@@ -3493,7 +3498,10 @@ resource "azurerm_linux_function_app" "test" {
   storage_account_access_key = azurerm_storage_account.test.primary_access_key
 
   site_config {}
+
 }
+
+
 `, r.template(data, planSku), data.RandomInteger, data.RandomInteger)
 }
 
@@ -3502,7 +3510,9 @@ func (r LinuxFunctionAppResource) vNetIntegration_subnet1(data acceptance.TestDa
 provider "azurerm" {
   features {}
 }
+
 %s
+
 resource "azurerm_virtual_network" "test" {
   name                = "vnet-%d"
   address_space       = ["10.0.0.0/16"]
@@ -3518,6 +3528,7 @@ resource "azurerm_subnet" "test1" {
 
   delegation {
     name = "delegation"
+
     service_delegation {
       name    = "Microsoft.Web/serverFarms"
       actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
@@ -3533,18 +3544,21 @@ resource "azurerm_subnet" "test2" {
 
   delegation {
     name = "delegation"
+
     service_delegation {
       name    = "Microsoft.Web/serverFarms"
       actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
     }
   }
 }
+
 resource "azurerm_linux_function_app" "test" {
   name                      = "acctest-LFA-%d"
   location                  = azurerm_resource_group.test.location
   resource_group_name       = azurerm_resource_group.test.name
   service_plan_id           = azurerm_service_plan.test.id
   virtual_network_subnet_id = azurerm_subnet.test1.id
+
   storage_account_name       = azurerm_storage_account.test.name
   storage_account_access_key = azurerm_storage_account.test.primary_access_key
 
@@ -3558,20 +3572,25 @@ func (r LinuxFunctionAppResource) vNetIntegration_subnet2(data acceptance.TestDa
 provider "azurerm" {
   features {}
 }
+
 %s
+
 resource "azurerm_virtual_network" "test" {
   name                = "vnet-%d"
   address_space       = ["10.0.0.0/16"]
   location            = azurerm_resource_group.test.location
   resource_group_name = azurerm_resource_group.test.name
 }
+
 resource "azurerm_subnet" "test1" {
   name                 = "subnet1"
   resource_group_name  = azurerm_resource_group.test.name
   virtual_network_name = azurerm_virtual_network.test.name
   address_prefixes     = ["10.0.1.0/24"]
+
   delegation {
     name = "delegation"
+
     service_delegation {
       name    = "Microsoft.Web/serverFarms"
       actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
@@ -3587,6 +3606,7 @@ resource "azurerm_subnet" "test2" {
 
   delegation {
     name = "delegation"
+
     service_delegation {
       name    = "Microsoft.Web/serverFarms"
       actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
@@ -3667,15 +3687,17 @@ func (r LinuxFunctionAppResource) withStorageAccountUpdate(data acceptance.TestD
 provider "azurerm" {
   features {}
 }
+
 %s
+
 resource "azurerm_linux_function_app" "test" {
-  name                       = "acctestWA-%d"
-  location                   = azurerm_resource_group.test.location
-  resource_group_name        = azurerm_resource_group.test.name
-  service_plan_id            = azurerm_service_plan.test.id
-  storage_account_name       = azurerm_storage_account.test.name
-  storage_account_access_key = azurerm_storage_account.test.primary_access_key
+  name                = "acctestWA-%d"
+  location            = azurerm_resource_group.test.location
+  resource_group_name = azurerm_resource_group.test.name
+  service_plan_id     = azurerm_service_plan.test.id
+
   site_config {}
+
   storage_account {
     name         = "updatedfiles"
     type         = "AzureBlob"
@@ -3684,6 +3706,7 @@ resource "azurerm_linux_function_app" "test" {
     access_key   = azurerm_storage_account.test.primary_access_key
     mount_path   = "/blob"
   }
+
 }
 `, r.templateWithStorageAccount(data), data.RandomInteger)
 }
