@@ -33,7 +33,7 @@ func resourceWebpubsubSharedPrivateLinkService() *pluginsdk.Resource {
 		},
 
 		Importer: pluginsdk.ImporterValidatingResourceId(func(id string) error {
-			_, err := parse.WebPubsubSharedPrivateLinkResourceID(id)
+			_, err := webpubsub.ValidateSharedPrivateLinkResourceId(id)
 			return err
 		}),
 
@@ -81,7 +81,7 @@ func resourceWebpubsubSharedPrivateLinkService() *pluginsdk.Resource {
 }
 
 func resourceWebPubsubSharedPrivateLinkServiceCreateUpdate(d *pluginsdk.ResourceData, meta interface{}) error {
-	client := meta.(*clients.Client).SignalR.WebPubsubSharedPrivateLinkResourceClient
+	client := meta.(*clients.Client).SignalR.WebPubSubClient.WebPubSub
 	subscriptionId := meta.(*clients.Client).Account.SubscriptionId
 	ctx, cancel := timeouts.ForCreateUpdate(meta.(*clients.Client).StopContext, d)
 	defer cancel()
@@ -94,7 +94,7 @@ func resourceWebPubsubSharedPrivateLinkServiceCreateUpdate(d *pluginsdk.Resource
 	id := parse.NewWebPubsubSharedPrivateLinkResourceID(subscriptionId, webPubsubID.ResourceGroup, webPubsubID.WebPubSubName, d.Get("name").(string))
 
 	if d.IsNewResource() {
-		existing, err := client.Get(ctx, id.SharedPrivateLinkResourceName, id.ResourceGroup, id.WebPubSubName)
+		existing, err := client.SharedPrivateLinkResourcesGet(ctx, id.SharedPrivateLinkResourceName, id.ResourceGroup, id.WebPubSubName)
 		if err != nil {
 			if !utils.ResponseWasNotFound(existing.Response) {
 				return fmt.Errorf("checking for existing %q: %+v", id, err)
