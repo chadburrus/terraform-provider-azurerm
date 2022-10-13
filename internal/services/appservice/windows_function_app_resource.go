@@ -46,7 +46,6 @@ type WindowsFunctionAppModel struct {
 	BuiltinLogging              bool                                   `tfschema:"builtin_logging_enabled"`
 	ClientCertEnabled           bool                                   `tfschema:"client_certificate_enabled"`
 	ClientCertMode              string                                 `tfschema:"client_certificate_mode"`
-	StorageAccounts             []helpers.StorageAccount               `tfschema:"storage_account"`
 	ConnectionStrings           []helpers.ConnectionString             `tfschema:"connection_string"`
 	DailyMemoryTimeQuota        int                                    `tfschema:"daily_memory_time_quota"`
 	Enabled                     bool                                   `tfschema:"enabled"`
@@ -55,6 +54,7 @@ type WindowsFunctionAppModel struct {
 	HttpsOnly                   bool                                   `tfschema:"https_only"`
 	KeyVaultReferenceIdentityID string                                 `tfschema:"key_vault_reference_identity_id"`
 	SiteConfig                  []helpers.SiteConfigWindowsFunctionApp `tfschema:"site_config"`
+	StorageAccounts             []helpers.StorageAccount               `tfschema:"storage_account"`
 	Tags                        map[string]string                      `tfschema:"tags"`
 	VirtualNetworkSubnetID      string                                 `tfschema:"virtual_network_subnet_id"`
 
@@ -245,7 +245,7 @@ func (r WindowsFunctionAppResource) Arguments() map[string]*pluginsdk.Schema {
 
 		"sticky_settings": helpers.StickySettingsSchema(),
 
-		"storage_account": helpers.StorageAccountSchema(),
+		"storage_account": helpers.AzureStorageAccountSchemaWindows(),
 
 		"tags": tags.Schema(),
 
@@ -571,7 +571,7 @@ func (r WindowsFunctionAppResource) Read() sdk.ResourceFunc {
 
 			storageAccounts, err := client.ListAzureStorageAccounts(ctx, id.ResourceGroup, id.SiteName)
 			if err != nil {
-				return fmt.Errorf("reading Storage Account information for WIndows %s: %+v", id, err)
+				return fmt.Errorf("reading Storage Account information for Windows %s: %+v", id, err)
 			}
 
 			siteCredentialsFuture, err := client.ListPublishingCredentials(ctx, id.ResourceGroup, id.SiteName)
